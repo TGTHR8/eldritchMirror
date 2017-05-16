@@ -23,6 +23,7 @@
 const unsigned int matrix_width = 60;
 const unsigned int matrix_height = 32;
 const unsigned int myColor = 0x400020;
+extern "C" float pow10f(float);
 
 // These parameters adjust the vertical thresholds
 const float maxLevel = 0.5;      // 1.0 = max, lower is more "sensitive"
