@@ -18,11 +18,16 @@
 #include <Wire.h>
 #include <SD.h>
 #include <SPI.h>
-
+//Keepalive Blink
+const int ledPin = 13;
+int ledState = LOW; 
+unsigned long previousMillis = 0;  
+const long interval = 1000; 
 // The display size and color to use
 const unsigned int matrix_width = 60;
 const unsigned int matrix_height = 32;
 const unsigned int myColor = 0x400020;
+
 
 // These parameters adjust the vertical thresholds
 const float maxLevel = 0.5;      // 1.0 = max, lower is more "sensitive"
@@ -59,6 +64,10 @@ int frequencyBinsHorizontal[matrix_width] = {
 
 // Run setup once
 void setup() {
+  //Keepalive pin 13 blink
+  pinMode(ledPin, OUTPUT);
+  //Debug Serial
+  //Serial.begin(38400);
   // the audio library needs to be given memory to start working
   AudioMemory(12);
 
@@ -97,8 +106,8 @@ void loop() {
       level = fft.read(freqBin, freqBin + frequencyBinsHorizontal[x] - 1);
 
       // uncomment to see the spectrum in Arduino's Serial Monitor
-      // Serial.print(level);
-      // Serial.print("  ");
+      Serial.print(level);
+      Serial.print("  ");
 
       for (y=0; y < matrix_height; y++) {
         // for each vertical pixel, check if above the threshold
@@ -113,9 +122,12 @@ void loop() {
       // low to higher frequency from left to right
       freqBin = freqBin + frequencyBinsHorizontal[x];
     }
+    
     // after all pixels set, show them all at the same instant
     FastLED.show();
-    // Serial.println();
+    Serial.println();
+    //Keepalive blink check
+    blinky();
   }
 }
 
@@ -133,4 +145,30 @@ void computeVerticalLevels() {
     logLevel = logLevel * (1.0 - linearBlend);
     thresholdVertical[y] = (logLevel + linearLevel) * maxLevel;
   }
+}
+void blinky() {
+   unsigned long currentMillis = millis();
+   Serial.print("Current= ");
+   Serial.print(currentMillis);
+   Serial.print("   ");
+   Serial.print("Previous= ");
+   Serial.print(previousMillis);
+   Serial.print("   ");
+   Serial.print("LEDstate= ");
+   Serial.print(ledState);
+   Serial.println();
+  if (currentMillis - previousMillis >= interval) {
+    // save the last time you blinked the LED
+    previousMillis = currentMillis;
+
+    // if the LED is off turn it on and vice-versa:
+    if (ledState == LOW) {
+      ledState = HIGH;
+    } else {
+      ledState = LOW;
+    }
+
+    // set the LED with the ledState of the variable:
+    digitalWrite(ledPin, ledState);
+}
 }
