@@ -25,9 +25,10 @@ const unsigned int matrix_height = 100;
 unsigned int myColor = 0;
 
 // These parameters adjust the vertical thresholds
-const float maxLevel = 0.25;      // 1.0 = max, lower is more "sensitive"
-const float dynamicRange = 40.0; // total range to display, in decibels
-const float linearBlend = 1.0;   // useful range is 0 to 0.7
+const float maxLevel = 0.5;      // 1.0 = max, lower is more "sensitive"
+const float dynamicRange = 120.0; // total range to display, in decibels
+const float linearBlend = 0.7;   // useful range is 0 to 0.7
+const int config = WS2811_GRB | WS2811_800kHz;
 
 CRGB leds[matrix_width * matrix_height];
 
@@ -95,15 +96,17 @@ void loop() {
       level = fft.read(freqBin, freqBin + frequencyBinsHorizontal[x] - 1);
 
       // uncomment to see the spectrum in Arduino's Serial Monitor
-      // Serial.print(level);
-      // Serial.print("  ");
+       //Serial.print(level);
+       //Serial.print("  ");
 
       for (y=0; y < matrix_height; y++) {
         // for each vertical pixel, check if above the threshold
         // and turn the LED on or off
         if (level >= thresholdVertical[y]) {
           leds[xy(x,y)] = CHSV(myColor, 200, 255);
+          //leds[xy(x,y)] = CRGB::Red;
         } else {
+          //leds[xy(x,y)] = CHSV(myColor+128, 200, 255);
           leds[xy(x,y)] = CRGB::Black;
         }
       }
@@ -113,9 +116,11 @@ void loop() {
     }
     // after all pixels set, show them all at the same instant
     FastLED.show();
+    //myColor++; 
     // Serial.println();
-    EVERY_N_MILLISECONDS( 20 ) { myColor++; } // slowly cycle the "base color" through the rainbow
+    
   }
+ EVERY_N_MILLISECONDS( 20 ) { myColor++; } // slowly cycle the "base color" through the rainbow
 }
 
 
