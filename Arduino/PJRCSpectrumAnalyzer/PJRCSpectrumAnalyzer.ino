@@ -20,15 +20,14 @@
 #include <SPI.h>
 
 // The display size and color to use
-const unsigned int matrix_width = 60;
+const unsigned int matrix_width = 64;
 const unsigned int matrix_height = 32;
-const unsigned int myColor = 0x400020;
-extern "C" float pow10f(float);
+unsigned int myColor = 0;
 
 // These parameters adjust the vertical thresholds
-const float maxLevel = 0.5;      // 1.0 = max, lower is more "sensitive"
+const float maxLevel = 0.25;      // 1.0 = max, lower is more "sensitive"
 const float dynamicRange = 40.0; // total range to display, in decibels
-const float linearBlend = 0.3;   // useful range is 0 to 0.7
+const float linearBlend = 1.0;   // useful range is 0 to 0.7
 
 CRGB leds[matrix_width * matrix_height];
 
@@ -56,8 +55,6 @@ int frequencyBinsHorizontal[matrix_width] = {
   15, 16, 17, 18, 19, 20, 22, 23, 24, 25
 };
 
-
-
 // Run setup once
 void setup() {
   // the audio library needs to be given memory to start working
@@ -68,6 +65,9 @@ void setup() {
 
   // turn on the display
   FastLED.addLeds<OCTOWS2811>(leds,(matrix_width * matrix_height) / 8);
+  
+  //dan's code
+  uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 }
 
 // A simple xy() function to turn display matrix coordinates
@@ -105,7 +105,7 @@ void loop() {
         // for each vertical pixel, check if above the threshold
         // and turn the LED on or off
         if (level >= thresholdVertical[y]) {
-          leds[xy(x,y)] = CRGB(myColor);
+          leds[xy(x,y)] = CHSV(myColor, 200, 255);
         } else {
           leds[xy(x,y)] = CRGB::Black;
         }
@@ -117,6 +117,7 @@ void loop() {
     // after all pixels set, show them all at the same instant
     FastLED.show();
     // Serial.println();
+    EVERY_N_MILLISECONDS( 20 ) { myColor++; } // slowly cycle the "base color" through the rainbow
   }
 }
 
