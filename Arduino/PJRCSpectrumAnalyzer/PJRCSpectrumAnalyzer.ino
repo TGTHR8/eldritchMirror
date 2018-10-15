@@ -20,8 +20,8 @@
 #include <SPI.h>
 
 // The display size and color to use
-const unsigned int matrix_width = 64;
-const unsigned int matrix_height = 32;
+const unsigned int matrix_width = 16;
+const unsigned int matrix_height = 100;
 unsigned int myColor = 0;
 
 // These parameters adjust the vertical thresholds
@@ -47,12 +47,9 @@ float thresholdVertical[matrix_height];
 // in octaves and FFT bins are linear, the low frequencies
 // use a small number of bins, higher frequencies use more.
 int frequencyBinsHorizontal[matrix_width] = {
-   1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
-   2,  2,  2,  2,  2,  2,  2,  2,  2,  3,
-   3,  3,  3,  3,  4,  4,  4,  4,  4,  5,
-   5,  5,  6,  6,  6,  7,  7,  7,  8,  8,
-   9,  9, 10, 10, 11, 12, 12, 13, 14, 15,
-  15, 16, 17, 18, 19, 20, 22, 23, 24, 25
+   4,  4,  6,  8,  9,
+   12,  16,  18,  25,  30,
+   38, 48, 60, 74, 94
 };
 
 // Run setup once
